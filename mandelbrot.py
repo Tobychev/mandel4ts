@@ -29,7 +29,7 @@
 class BmpImage:
 
   def __init__(self,filename,width,height,depth):
-    
+
     self.out = 0
     self.width = width
     self.height = height
@@ -123,45 +123,45 @@ def mandelbrot(c,maxCount = 100,limit=2):
     count += 1
 
   return count
-  
+
 def checkCardioid(c):
   """ Check getting to the Mandelbrot set area to stop iterations
   """
   x = c.real
-  y = c.imag  
+  y = c.imag
   y2 = y*y
   q = (x-0.25)*(x-0.25) + y2
   qq = q*(q+(x-0.25))
-  
+
   if qq < 0.25*y2:
-    print "exit 1"
-    print x,y,y2,q,qq,0.25*y2
+    print ("exit 1")
+    print (x,y,y2,q,qq,0.25*y2)
     return 1
-  
+
   if (x+1)*(x+1)+y2 < 0.0625:
-    print "exit 2"
-    print  (x+1)*(x+1)+y2 
-    return 1 
-  return 0  
-  
+    print ("exit 2")
+    print ( (x+1)*(x+1)+y2)
+    return 1
+  return 0
+
 ##########################################################
 #
 # Various color generators
 #
 ##########################################################
-  
+
 def getColorRange(count,maxIter):
   black = [0,0,0]
   mincolor = [255.,255.,0.]
-  maxcolor = [0.,0.,255.]  
-  
+  maxcolor = [0.,0.,255.]
+
   color = [0,0,0]
   if count < maxIter:
     color = []
     for i in range(3):
       c = (maxcolor[i]*count + mincolor[i]*(maxIter-count))/maxIter
       color.append(int(c))
-  return color    
+  return color
 
 colorDict = {}
 
@@ -176,9 +176,9 @@ def getColorRandom(count,maxIter):
     color = [int('0x'+hexstring[:2],0),int('0x'+hexstring[2:4],0),int('0x'+hexstring[4:6],0)]
     colorDict[count] = color
   else:
-    color = colorDict[count]  
+    color = colorDict[count]
   return color
-  
+
 def getColorSlider(count,maxIter):
   global colorDict
   if count == maxIter:
@@ -190,9 +190,9 @@ def getColorSlider(count,maxIter):
     color.append(int(255. - 255./maxIter*count))
     colorDict[count] = color
   else:
-    color = colorDict[count]  
-  return color   
-  
+    color = colorDict[count]
+  return color
+
 def getColorSin(count,maxIter):
   global colorDict,cFactor,cPhase,cDelta
   if count == maxIter:
@@ -205,11 +205,11 @@ def getColorSin(count,maxIter):
     color = [c1,c2,c3]
     colorDict[count] = color
   else:
-    color = colorDict[count]    
+    color = colorDict[count]
   return color
-  
-greyDict = {}  
-  
+
+greyDict = {}
+
 def getGreyLevel(count,maxIter, cFactor=0.02, cPhase=1.):
   global greyDict
   if count == maxIter:
@@ -220,7 +220,7 @@ def getGreyLevel(count,maxIter, cFactor=0.02, cPhase=1.):
     greyDict[count] = grey
   else:
     grey = greyDict[count]
-  return grey        
+  return grey
 
 ###################################################################
 #
@@ -234,16 +234,16 @@ import getopt
 from math import sin
 
 def usage():
-  
-  print """
-  The mandelbrot program is creating an image of a Mandelbrot set and its vicinity in 
-  the given range of the C parameter. For more information about the Mandelbrot set 
+
+  print ("""
+  The mandelbrot program is creating an image of a Mandelbrot set and its vicinity in
+  the given range of the C parameter. For more information about the Mandelbrot set
   see http://en.wikipedia.org/Mandelbrot.
-  
+
   Usage:
       mandelbrot [options] [<output_file>]
-      
-  Options: 
+
+  Options:
       -X, --cx - the real part of the C parameter in the center of the image, default = -0.5
       -Y, --cy - the imaginary part of the C parameter in the center of the image, default = 0.0
       -P, --precision - the step size of the C parameter increment per pixel of the image, default = 0.01
@@ -255,8 +255,8 @@ def usage():
                            should be in the range 0.<x<1.0, default = 0.02
       -S, --color_phase - a magic color palette parameter, default = 1.0
       -D, --color_delta - yet another magic color palette parameter, default = 1.0
-      -h, --help - print this usage info        
-  """
+      -h, --help - print this usage info
+  """)
 
 if __name__ == '__main__':
     # Get the command line options first
@@ -306,10 +306,10 @@ if __name__ == '__main__':
       if o in ['-M','--max_iterations']:
         maxIter = int(v)
       if o in ['-B','--bw']:
-        bwImage = True  
+        bwImage = True
       if o in ['-h','--help']:
         usage()
-        sys.exit(0)                       
+        sys.exit(0)
 
     #if args:
       #output = args[0]
@@ -338,7 +338,7 @@ if __name__ == '__main__':
 
     start = time.time()
 
-    print "max iterations: %s, precision: %s, C: %f+%fj" % (maxIter, precision, centerX,centerY)
+    print ("max iterations: %s, precision: %s, C: %f+%fj" % (maxIter, precision, centerX,centerY))
 
     buff=list()
     # for y in range(image_height):
@@ -347,7 +347,7 @@ if __name__ == '__main__':
     print(y_i, y_f)
     for y in range(y_i, y_f):
       print('%d\r'%y)
-      dump='%d' % y 
+      dump='%d' % y
       for x in range(image_width):
         c = complex(start_real+(inc_real*x),start_imag+(inc_imag*y))
         count = mandelbrot(c,maxIter)
@@ -356,13 +356,13 @@ if __name__ == '__main__':
         if bwImage:
           grey = getGreyLevel(count,maxIter)
           my_bmp.write_pixel_bw(grey)
-        else:  
+        else:
           color = getColorSin(count,maxIter)
           my_bmp.write_pixel(*color)
           #print count, color, c
       buff.append(dump+'\n')
 
-    print 'Image generation time %.2f' % (time.time()-start)
+    print ('Image generation time %.2f' % (time.time()-start))
 
     my_bmp.close()
 
